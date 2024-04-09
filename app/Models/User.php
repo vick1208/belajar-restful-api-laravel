@@ -14,7 +14,8 @@ class User extends Model
     public $timestamps = true;
     public $incrementing = true;
 
-    public function contacts():HasMany{
+    public function contacts(): HasMany
+    {
         return $this->hasMany(Contact::class);
     }
 }
