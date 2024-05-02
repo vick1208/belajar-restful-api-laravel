@@ -127,7 +127,8 @@ class UserTest extends TestCase
             ]);
     }
 
-    public function testGetUnauthorized(){
+    public function testGetUnauthorized()
+    {
         $this->seed(UserSeeder::class);
 
         $this->get('api/users/current',)->assertStatus(401)
@@ -154,6 +155,81 @@ class UserTest extends TestCase
                     ]
                 ]
             ]);
+    }
 
+    public function testUpdatePasswordSuccess()
+    {
+        $this->seed([UserSeeder::class]);
+        $oldUser = User::where('username', 'test')->first();
+
+        $this->patch(
+            '/api/users/current',
+            [
+                'password' => 'baru'
+            ],
+            [
+                'Authorization' => 'test'
+            ]
+        )->assertStatus(200)
+            ->assertJson([
+                'data' => [
+                    'username' => 'test',
+                    'name' => 'test'
+                ]
+            ]);
+
+        $newUser = User::where('username', 'test')->first();
+        self::assertNotEquals($oldUser->password, $newUser->password);
+    }
+
+    public function testUpdateNameSuccess()
+    {
+        $this->seed([UserSeeder::class]);
+        $oldUser = User::where('username', 'test')->first();
+
+        $this->patch(
+            '/api/users/current',
+            [
+                'name' => 'Eko'
+            ],
+            [
+                'Authorization' => 'test'
+            ]
+        )->assertStatus(200)
+            ->assertJson([
+                'data' => [
+                    'username' => 'test',
+                    'name' => 'Eko'
+                ]
+            ]);
+
+        $newUser = User::where('username', 'test')->first();
+        self::assertNotEquals($oldUser->name, $newUser->name);
+    }
+
+    public function testUpdateFailed()
+    {
+        $this->seed([UserSeeder::class]);
+
+        $this->patch(
+            '/api/users/current',
+            [
+                'name' => "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer at eleifend lorem. Etiam non ante elit. Vivamus vehicula tincidunt ligula,
+                nec commodo odio. Etiam ultrices placerat erat sit amet eleifend. Phasellus auctor accumsan sagittis. Donec et ante quis tortor consequat commodo ut non diam. Sed malesuada sit amet metus ac malesuada.
+                Pellentesque justo magna, posuere sit amet placerat at, molestie ac risus.
+                Praesent facilisis aliquet ligula vel vulputate.
+                Aenean eu congue purus. Suspendisse egestas elit sit amet placerat semper. Praesent sodales sit amet massa sit amet tincidunt. Quisque ac sem sed turpis feugiat eleifend. Nullam interdum elit vitae mauris dignissim convallis."
+            ],
+            [
+                'Authorization' => 'test'
+            ]
+        )->assertStatus(400)
+            ->assertJson([
+                'errors' => [
+                    'name' => [
+                        "The name field must not be greater than 100 characters."
+                    ]
+                ]
+            ]);
     }
 }
