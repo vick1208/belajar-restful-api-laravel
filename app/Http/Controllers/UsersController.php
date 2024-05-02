@@ -81,7 +81,7 @@ class UsersController extends Controller
         return new UserResource($user);
     }
 
-    public function logout(Request $request): JsonResponse
+    public function logout(): JsonResponse
     {
         $user = Auth::user();
         $user->token = null;
