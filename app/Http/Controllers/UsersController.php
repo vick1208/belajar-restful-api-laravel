@@ -76,8 +76,20 @@ class UsersController extends Controller
         if (isset($data['password'])) {
             $user->password = Hash::make($data['password']);
         }
-
+        /** @var \App\Models\User $user **/
         $user->save();
         return new UserResource($user);
+    }
+
+    public function logout(Request $request): JsonResponse
+    {
+        $user = Auth::user();
+        $user->token = null;
+        /** @var \App\Models\User $user **/
+        $user->save();
+
+        return response()->json([
+            "data" => true
+        ])->setStatusCode(200);
     }
 }
