@@ -57,7 +57,7 @@ class UsersController extends Controller
         return new UserResource($user);
     }
 
-    public function get(Request $request): UserResource
+    public function get(): UserResource
     {
         $user = Auth::user();
         return new UserResource($user);
