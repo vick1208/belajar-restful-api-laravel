@@ -15,6 +15,10 @@ class Contact extends Model
     public $incrementing = true;
     public $timestamps = true;
 
+
+    protected $guarded = ['id'];
+
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);

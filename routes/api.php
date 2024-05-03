@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ContactsController;
 use App\Http\Controllers\UsersController;
 use App\Http\Middleware\APIAuthMiddleware;
 use Illuminate\Http\Request;
@@ -28,4 +29,6 @@ Route::middleware(APIAuthMiddleware::class)->group(function(){
     Route::get('/users/current',[UsersController::class,'get']);
     Route::patch('/users/current',[UsersController::class,'update']);
     Route::delete('/users/logout',[UsersController::class,'logout']);
+
+    Route::post('/contacts',[ContactsController::class,'create']);
 });
