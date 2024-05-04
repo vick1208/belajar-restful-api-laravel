@@ -31,6 +31,7 @@ Route::middleware(APIAuthMiddleware::class)->group(function(){
     Route::delete('/users/logout',[UsersController::class,'logout']);
 
     Route::post('/contacts',[ContactsController::class,'create']);
+    Route::get('/contacts', [ContactsController::class, 'search']);
     Route::get('/contacts/{id}',[ContactsController::class,'get'])->where('id','[0-9]+');
     Route::put('/contacts/{id}',[ContactsController::class,'update'])->where('id','[0-9]+');
     Route::delete('/contacts/{id}',[ContactsController::class,'delete'])->where('id','[0-9]+');
