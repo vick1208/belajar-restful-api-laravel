@@ -85,35 +85,37 @@ class AddressTest extends TestCase
             ]);
     }
 
-    public function testGetSuccess(){
-        $this->seed([UserSeeder::class,ContactSeeder::class,AddressSeeder::class]);
+    public function testGetSuccess()
+    {
+        $this->seed([UserSeeder::class, ContactSeeder::class, AddressSeeder::class]);
         $address = Address::query()->limit(1)->first();
 
-        $this->get('/api/contacts/' . $address->contact_id . '/addresses/' . $address->id,[
+        $this->get('/api/contacts/' . $address->contact_id . '/addresses/' . $address->id, [
             'Authorization' => 'test'
         ])->assertStatus(200)
-        ->assertJson([
-            "data" => [
-                'street' => 'test',
+            ->assertJson([
+                "data" => [
+                    'street' => 'test',
                     'city' => 'test',
                     'province' => 'test',
                     'country' => 'test',
                     'postal_code' => '11111'
-            ]
-        ]);
+                ]
+            ]);
     }
-    public function testGetNotFound(){
-        $this->seed([UserSeeder::class,ContactSeeder::class,AddressSeeder::class]);
+    public function testGetNotFound()
+    {
+        $this->seed([UserSeeder::class, ContactSeeder::class, AddressSeeder::class]);
         $address = Address::query()->limit(1)->first();
 
-        $this->get('/api/contacts/' . $address->contact_id . '/addresses/' . ($address->id + 1),[
+        $this->get('/api/contacts/' . $address->contact_id . '/addresses/' . ($address->id + 1), [
             'Authorization' => 'test'
         ])->assertStatus(404)
-        ->assertJson([
-            "errors" => [
-                'message' => ['not found']
-            ]
-        ]);
+            ->assertJson([
+                "errors" => [
+                    'message' => ['not found']
+                ]
+            ]);
     }
 
     public function testUpdateSuccess()
@@ -121,7 +123,8 @@ class AddressTest extends TestCase
         $this->seed([UserSeeder::class, ContactSeeder::class, AddressSeeder::class]);
         $address = Address::query()->limit(1)->first();
 
-        $this->put('/api/contacts/' . $address->contact_id . '/addresses/' . $address->id,
+        $this->put(
+            '/api/contacts/' . $address->contact_id . '/addresses/' . $address->id,
             [
                 'street' => 'update',
                 'city' => 'update',
@@ -142,7 +145,6 @@ class AddressTest extends TestCase
                     'postal_code' => '22222'
                 ]
             ]);
-
     }
 
     public function testUpdateFailed()
@@ -150,7 +152,8 @@ class AddressTest extends TestCase
         $this->seed([UserSeeder::class, ContactSeeder::class, AddressSeeder::class]);
         $address = Address::query()->limit(1)->first();
 
-        $this->put('/api/contacts/' . $address->contact_id . '/addresses/' . $address->id,
+        $this->put(
+            '/api/contacts/' . $address->contact_id . '/addresses/' . $address->id,
             [
                 'street' => 'update',
                 'city' => 'update',
@@ -174,7 +177,8 @@ class AddressTest extends TestCase
         $this->seed([UserSeeder::class, ContactSeeder::class, AddressSeeder::class]);
         $address = Address::query()->limit(1)->first();
 
-        $this->put('/api/contacts/' . $address->contact_id . '/addresses/' . ($address->id + 1),
+        $this->put(
+            '/api/contacts/' . $address->contact_id . '/addresses/' . ($address->id + 1),
             [
                 'street' => 'update',
                 'city' => 'update',
@@ -182,6 +186,41 @@ class AddressTest extends TestCase
                 'country' => 'update',
                 'postal_code' => '22222'
             ],
+            [
+                'Authorization' => 'test'
+            ]
+        )->assertStatus(404)
+            ->assertJson([
+                'errors' => [
+                    'message' => ['not found']
+                ]
+            ]);
+    }
+
+    public function testDeleteSuccess()
+    {
+        $this->seed([UserSeeder::class, ContactSeeder::class, AddressSeeder::class]);
+        $address = Address::query()->limit(1)->first();
+
+        $this->delete(
+            '/api/contacts/' . $address->contact_id . '/addresses/' . $address->id,
+            [],
+            [
+                'Authorization' => 'test'
+            ]
+        )->assertStatus(200)
+            ->assertJson([
+                'data' => true
+            ]);
+    }
+    public function testDeleteNotFound()
+    {
+        $this->seed([UserSeeder::class, ContactSeeder::class, AddressSeeder::class]);
+        $address = Address::query()->limit(1)->first();
+
+        $this->delete(
+            '/api/contacts/' . $address->contact_id . '/addresses/' . ($address->id + 1),
+            [],
             [
                 'Authorization' => 'test'
             ]
